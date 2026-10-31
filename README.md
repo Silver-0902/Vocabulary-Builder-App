@@ -74,6 +74,31 @@ python -m pytest tests -q          # 14 API tests (scheduling, permissions, impo
 sh tests/run_e2e.sh                # starts a fresh server and drives a real browser (needs: npm i playwright)
 ```
 
+## Deploying free on PythonAnywhere (small classes)
+
+PythonAnywhere's free plan has no ASGI server, so `wsgi.py` wraps the app with `a2wsgi`.
+
+1. Create a free "Beginner" account at pythonanywhere.com. Your address will be `https://USERNAME.pythonanywhere.com`.
+2. Open a **Bash console**, then:
+   ```
+   git clone https://github.com/YOU/REPO.git vocabapp     # or upload a zip in the Files tab and unzip it
+   cd vocabapp
+   mkvirtualenv vocab --python=python3.12
+   pip install -r requirements.txt
+   python -m app.manage create-teacher YOUR_NAME YOUR_PASSWORD
+   ```
+3. **Web** tab -> *Add a new web app* -> *Manual configuration* -> Python 3.12.
+   - Virtualenv: `/home/USERNAME/.virtualenvs/vocab`
+   - Click the WSGI configuration file link, delete everything in it and write:
+     ```
+     import sys
+     sys.path.insert(0, "/home/USERNAME/vocabapp")
+     from wsgi import application
+     ```
+4. Press the green **Reload** button and open your address.
+5. Free web apps expire after one month: log in and press the extend button on the Web tab each month.
+6. Back up `vocabapp/data/vocab.db` (Files tab -> download) from time to time. It holds all student progress.
+
 ## Deploying online
 
 You need a small always-on server with HTTPS, because students log in with passwords.
